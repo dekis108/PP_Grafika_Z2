@@ -38,6 +38,12 @@ namespace PZ3
         private static int zoomCurent = 1;
         private static double _rotateOffset = 0.5;
 
+        private const string noFilter = "No Filter";
+        private const string from0to3 = "0 - 3";
+        private const string from4to5 = "4 - 5";
+        private const string from6toInf = "6+";
+
+
         private GeometryModel3D hitgeo;
         private Dictionary<long, GeometryModel3D> entitiesModels = new Dictionary<long, GeometryModel3D>();
         private List<GeometryModel3D> selectedEntities = new List<GeometryModel3D>();
@@ -47,6 +53,17 @@ namespace PZ3
         public MainWindow()
         {
             InitializeComponent();
+
+            List<string> connectionFilters = new List<string>() {
+                noFilter,
+                from0to3,
+                from4to5,
+                from6toInf
+            };
+            comboConnectivity.ItemsSource = connectionFilters;
+            comboConnectivity.SelectedItem = comboConnectivity.Items[0];
+            comboConnectivity.SelectionChanged += comboConnectivity_SelectionChanged;
+
             _importer = new Importer();
             _importer.LoadModel();
 
@@ -258,5 +275,27 @@ namespace PZ3
             }
             catch { }
         }
+
+        private void comboConnectivity_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch((string)comboConnectivity.SelectedItem)
+            {
+                default:
+                case noFilter:
+                    _importer.ApplyConnectionFilterToPowerEntities(int.MinValue, int.MaxValue);
+                    break;
+                case from0to3:
+                    _importer.ApplyConnectionFilterToPowerEntities(0, 3);
+                    break;
+                case from4to5:
+                    _importer.ApplyConnectionFilterToPowerEntities(4, 5);
+                    break;
+                case from6toInf:
+                    _importer.ApplyConnectionFilterToPowerEntities(6, int.MaxValue);
+                    break;
+            }
+        }
+
+
     }
 }

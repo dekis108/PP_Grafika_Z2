@@ -31,15 +31,15 @@
 
 
             <Viewport3D.Children>
-               
+
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
                         <AmbientLight />
                     </ModelVisual3D.Content>
                 </ModelVisual3D>
-                
-                
-                
+
+
+
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
                         <Model3DGroup x:Name="Map">
@@ -60,9 +60,11 @@
                         </Model3DGroup>
                     </ModelVisual3D.Content>
                 </ModelVisual3D>
-                
-                
+
+
             </Viewport3D.Children>
         </Viewport3D>
+        <ComboBox x:Name="comboConnectivity" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Connection filter:" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </Window>

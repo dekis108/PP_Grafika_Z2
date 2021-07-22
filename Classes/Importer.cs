@@ -173,5 +173,23 @@ namespace PZ3.Classes
             longitude = ((delt * (180.0 / Math.PI)) + s) + diflon;
             latitude = ((lat + (1 + e2cuadrada * Math.Pow(Math.Cos(lat), 2) - (3.0 / 2.0) * e2cuadrada * Math.Sin(lat) * Math.Cos(lat) * (tao - lat)) * (tao - lat)) * (180.0 / Math.PI)) + diflat;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fillterType">
+        /// 0 = No Filter
+        /// 1 = From 0 to 3
+        /// 2 = From 4 to 5
+        /// 3 = 6+
+        /// </param>
+        internal void ApplyConnectionFilterToPowerEntities(int from, int to)
+        {
+            foreach(PowerEntity entity in PowerGrid.PowerEntities.Values)
+            {
+                
+            }
+        }
+
     }
 }
