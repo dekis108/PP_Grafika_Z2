@@ -68,6 +68,11 @@ namespace PZ2.Model
             return lenght;
         }
 
+        internal void AddConnections(long entity)
+        {
+            if (PowerEntities.ContainsKey(entity)) PowerEntities[entity].ConnectionCount++;
+        }
+
         public void  SortLines()
         {
             LineEntities = LineEntities.OrderBy(x => GetLineLenght(x.Value)).ToDictionary(x=>x.Key, x=>x.Value);

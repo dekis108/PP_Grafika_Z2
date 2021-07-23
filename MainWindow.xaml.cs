@@ -76,6 +76,8 @@ namespace PZ3
 
             //models.AddRange(_drawer.DrawPowerEntities(_importer.PowerGrid.PowerEntities));
             linesModels.AddRange(_drawer.DrawLines(_importer.PowerGrid.LineEntities));
+
+            _drawer.CreateFilterBrackets();
         }
 
 
@@ -278,22 +280,8 @@ namespace PZ3
 
         private void comboConnectivity_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch((string)comboConnectivity.SelectedItem)
-            {
-                default:
-                case noFilter:
-                    _importer.ApplyConnectionFilterToPowerEntities(int.MinValue, int.MaxValue);
-                    break;
-                case from0to3:
-                    _importer.ApplyConnectionFilterToPowerEntities(0, 3);
-                    break;
-                case from4to5:
-                    _importer.ApplyConnectionFilterToPowerEntities(4, 5);
-                    break;
-                case from6toInf:
-                    _importer.ApplyConnectionFilterToPowerEntities(6, int.MaxValue);
-                    break;
-            }
+            _drawer.ApplyConnectionFilterToPowerEntities((string)comboConnectivity.SelectedItem);
+
         }
 
 

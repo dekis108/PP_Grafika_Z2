@@ -9,6 +9,8 @@ namespace PZ2.Model
 {
     public class PowerEntity
     {
+
+
         private double x;
         private double y;
         public string Name { get; set; }
@@ -18,11 +20,13 @@ namespace PZ2.Model
 
         public double TranslatedY { get; set; }
 
+        public int ConnectionCount { get; set; }
+
 
 
         public PowerEntity()
         {
-
+            ConnectionCount = 0;
         }
 
         public override string ToString()
