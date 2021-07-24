@@ -38,11 +38,15 @@ namespace PZ3
         private static int zoomCurent = 1;
         private static double _rotateOffset = 0.5;
 
-        private const string noFilter = "No Filter";
-        private const string from0to3 = "0 - 3";
-        private const string from4to5 = "4 - 5";
-        private const string from6toInf = "6+";
+        private string noFilter = "No Filter";
 
+        private string option1;
+        private string option2;
+        private string option3;
+
+        private string resOption1;
+        private string resOption2;
+        private string resOption3;
 
         private GeometryModel3D hitgeo;
         private Dictionary<long, GeometryModel3D> entitiesModels = new Dictionary<long, GeometryModel3D>();
@@ -53,33 +57,61 @@ namespace PZ3
         public MainWindow()
         {
             InitializeComponent();
+            _importer = new Importer();
+            _importer.LoadModel();
+
+            InitDrawer(_importer.PowerGrid);
 
             List<string> connectionFilters = new List<string>() {
                 noFilter,
-                from0to3,
-                from4to5,
-                from6toInf
+                option1,
+                option2,
+                option3
             };
             comboConnectivity.ItemsSource = connectionFilters;
             comboConnectivity.SelectedItem = comboConnectivity.Items[0];
             comboConnectivity.SelectionChanged += comboConnectivity_SelectionChanged;
 
-            _importer = new Importer();
-            _importer.LoadModel();
+            List<string> resistenceFilters = new List<string>() {
+                noFilter,
+                resOption1,
+                resOption2,
+                resOption3
+            };
+            comboResistance.ItemsSource = resistenceFilters;
+            comboResistance.SelectedItem = comboResistance.Items[0];
+            comboResistance.SelectionChanged += comboResistance_SelectionChanged;
 
-            _drawer = new Drawer(Map);
-            
-            foreach(var pair in _drawer.DrawPowerEntities(_importer.PowerGrid.PowerEntities))
+
+
+            _drawer.Draw();
+
+
+            /*
+             *             foreach (var pair in _drawer.DrawPowerEntities(_importer.PowerGrid.PowerEntities))
             {
                 entitiesModels.Add(pair.Key, pair.Value);
             }
 
             //models.AddRange(_drawer.DrawPowerEntities(_importer.PowerGrid.PowerEntities));
             linesModels.AddRange(_drawer.DrawLines(_importer.PowerGrid.LineEntities));
-
-            _drawer.CreateFilterBrackets();
+             */
         }
 
+        private void InitDrawer(PowerGrid powerGrid)
+        {
+            _drawer = new Drawer(Map, powerGrid.PowerEntities, powerGrid.LineEntities);
+
+            noFilter = ConnectionFilter.noFilter;
+
+            option1 = ConnectionFilter.option1;
+            option2 = ConnectionFilter.option2;
+            option3 = ConnectionFilter.option3;
+
+            resOption1 = ResistanceFilter.option1;
+            resOption2 = ResistanceFilter.option2;
+            resOption3 = ResistanceFilter.option3;
+        }
 
         private void viewport1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -280,8 +312,13 @@ namespace PZ3
 
         private void comboConnectivity_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _drawer.ApplyConnectionFilterToPowerEntities((string)comboConnectivity.SelectedItem);
+            _drawer.displayFilter.SetConnectionFilter((string)comboConnectivity.SelectedItem);
+            _drawer.Draw();
+        }
 
+        private void comboResistance_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           // _drawer.ApplyResistanceFilterToLines((string)comboResistance.SelectedItem);
         }
 
 

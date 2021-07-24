@@ -63,8 +63,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\ConnectionFilter.cs" />
+    <Compile Include="Classes\DrawableElements.cs" />
     <Compile Include="Classes\Drawer.cs" />
     <Compile Include="Classes\Importer.cs" />
+    <Compile Include="Classes\ModelDisplayFilter.cs" />
+    <Compile Include="Classes\OpennessFilter.cs" />
+    <Compile Include="Classes\ResistanceFilter.cs" />
+    <Compile Include="Interfaces\IModelFilter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

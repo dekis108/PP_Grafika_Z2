@@ -14,10 +14,7 @@ namespace PZ3.Classes
 {
     public class Drawer
     {
-        private const string noFilter = "No Filter";
-        private const string from0to3 = "0 - 3";
-        private const string from4to5 = "4 - 5";
-        private const string from6toInf = "6+";
+
 
         private static double _latitudeMin = 45.2325;
         private static double _latitudeMax = 45.277031;
@@ -38,7 +35,7 @@ namespace PZ3.Classes
         private DiffuseMaterial _defaultSubstationMaterial = new DiffuseMaterial(Brushes.Orange);
         private DiffuseMaterial _selectedMaterial = new DiffuseMaterial(Brushes.Purple);
 
-        private Dictionary<long, GeometryModel3D> powerEntities = new Dictionary<long, GeometryModel3D>();
+        //private Dictionary<long, GeometryModel3D> powerEntities = new Dictionary<long, GeometryModel3D>();
         private Dictionary<Point, int> locationsTaken = new Dictionary<Point, int>();
         private List<GeometryModel3D> powerLines = new List<GeometryModel3D>();
 
@@ -48,48 +45,20 @@ namespace PZ3.Classes
         public static readonly DependencyProperty EntityTypeDP = DependencyProperty.RegisterAttached("EntityType", typeof(string), typeof(GeometryModel3D));
         public static readonly DependencyProperty SwitchMode = DependencyProperty.RegisterAttached("SwitchMode", typeof(bool), typeof(GeometryModel3D));
 
-        private List<GeometryModel3D> allEntities = new List<GeometryModel3D>();
-        private List<GeometryModel3D> from0To3Connections = new List<GeometryModel3D>();
-        private List<GeometryModel3D> from4To5Connections = new List<GeometryModel3D>();
-        private List<GeometryModel3D> from6ToInfConnections = new List<GeometryModel3D>();
-
-        private static Model3DCollection allModels = new Model3DCollection();
-        private static Model3DCollection modelsFrom0To3Connections = new Model3DCollection();
-        private static Model3DCollection modelsFrom4To5Connections = new Model3DCollection();
-        private static Model3DCollection modelsFrom6ToInfConnections = new Model3DCollection();
-
         private Dictionary<long, PowerEntity> gridPowerEntities = new Dictionary<long, PowerEntity>();
 
-        public Drawer(Model3DGroup map)
+        public ModelDisplayFilter displayFilter { get; private set; }
+
+        public Drawer(Model3DGroup map, Dictionary<long, PowerEntity> powerEntities, Dictionary<long, LineEntity> lineEntities)
         {
             _map = map;
-            foreach (var model in _map.Children) _mapBackground.Add(model);
+            foreach (var model in map.Children) _mapBackground.Add(model);
+
+            displayFilter = new ModelDisplayFilter(map, powerEntities, lineEntities);
         }
 
-
-        public void CreateFilterBrackets()
-        {
-            CreateConnectionBrackets();
-        }
-
-        private void CreateConnectionBrackets()
-        {
-            //add the background map to each filter bracket
-            foreach (GeometryModel3D obj in _mapBackground) allModels.Add(obj);
-            foreach (GeometryModel3D obj in _mapBackground) modelsFrom0To3Connections.Add(obj);
-            foreach (GeometryModel3D obj in _mapBackground) modelsFrom4To5Connections.Add(obj);
-            foreach (GeometryModel3D obj in _mapBackground) modelsFrom6ToInfConnections.Add(obj);
-
-
-            foreach (GeometryModel3D obj in allEntities) allModels.Add(obj);
-            foreach (GeometryModel3D obj in from0To3Connections) modelsFrom0To3Connections.Add(obj);
-            foreach (GeometryModel3D obj in from4To5Connections) modelsFrom4To5Connections.Add(obj);
-            foreach (GeometryModel3D obj in from6ToInfConnections) modelsFrom6ToInfConnections.Add(obj);
-
-
-        }
-
-        public Dictionary<long, GeometryModel3D> DrawPowerEntities(Dictionary<long, PowerEntity> entities) 
+        
+        public void DrawPowerEntities(Dictionary<long, PowerEntity> entities) 
         {
             gridPowerEntities = entities;
             foreach (var entity in entities.Values)
@@ -123,8 +92,19 @@ namespace PZ3.Classes
 
                 Draw(entity, point);
             }
+        }
 
-            return powerEntities;
+        internal void Draw()
+        {
+            DrawableElements toDraw =  displayFilter.FilterOut();
+
+            locationsTaken = new Dictionary<Point, int>();
+
+            _map.Children.Clear();
+            foreach (var model in _mapBackground) _map.Children.Add(model);
+
+            DrawPowerEntities(toDraw.powerEntities);
+            DrawLines(toDraw.lines);
         }
 
         private void ScaleToMap(double x, double y, out double outX, out double outY)
@@ -189,32 +169,8 @@ namespace PZ3.Classes
 
             powerLine.Geometry = new MeshGeometry3D() { Positions = points, TriangleIndices = indicies };
 
-            AssignLineToConnectionBrackets(line, powerLine);
             _map.Children.Add(powerLine);
             powerLines.Add(powerLine);
-        }
-
-        private void AssignLineToConnectionBrackets(LineEntity line, GeometryModel3D powerLine)
-        {
-            //za sada ruzna hard code
-            allEntities.Add(powerLine);
-            if (!gridPowerEntities.ContainsKey(line.FirstEnd) || !gridPowerEntities.ContainsKey(line.SecondEnd))
-            {
-                return;
-            }
-
-            if (gridPowerEntities[line.FirstEnd].ConnectionCount <= 3  && gridPowerEntities[line.SecondEnd].ConnectionCount <= 3)
-            {
-                from0To3Connections.Add(powerLine);
-            }
-            else if (gridPowerEntities[line.FirstEnd].ConnectionCount <= 5 && gridPowerEntities[line.SecondEnd].ConnectionCount <= 5)
-            {
-                from4To5Connections.Add(powerLine);
-            }
-            else if (gridPowerEntities[line.FirstEnd].ConnectionCount > 5  && gridPowerEntities[line.SecondEnd].ConnectionCount > 5)
-            {
-                from6ToInfConnections.Add(powerLine);
-            }
         }
 
         private void Draw(PowerEntity entity, Point point)
@@ -288,59 +244,7 @@ namespace PZ3.Classes
 
             obj.Geometry = new MeshGeometry3D() { Positions = points, TriangleIndices = indicies};
 
-            AssignEntityToConnectionBrackets(entity, obj);
-
             _map.Children.Add(obj);
-            powerEntities.Add(entity.Id,  obj);
-        }
-
-        internal void ApplyConnectionFilterToPowerEntities(string filter)
-        {
-            //_map.Children.Clear();
-            //foreach (var obj in _mapBackground) _map.Children.Add(obj);
- 
-            switch (filter)
-            {
-                default:
-                case noFilter:
-                    _map.Children = allModels;
-                    break;
-                case from0to3:
-                    _map.Children = modelsFrom0To3Connections;
-                    break;
-                case from4to5:
-                    _map.Children = modelsFrom4To5Connections;
-                    break;
-                case from6toInf:
-                    _map.Children = modelsFrom6ToInfConnections;
-                    break;
-            }
-        }
-
-        private void AddEntitiesToMapChildren(List<GeometryModel3D> objects)
-        {
-            foreach (GeometryModel3D obj in objects)
-            {
-                _map.Children.Add(obj);
-            }
-        }
-
-        private void AssignEntityToConnectionBrackets(PowerEntity entity, GeometryModel3D obj)
-        {
-            //za sada ruzna hard code
-            allEntities.Add(obj);
-            if (entity.ConnectionCount <= 3)
-            {
-                from0To3Connections.Add(obj);
-            }
-            else if (entity.ConnectionCount <= 5)
-            {
-                from4To5Connections.Add(obj);
-            }
-            else if (entity.ConnectionCount > 5)
-            {
-                from6ToInfConnections.Add(obj);
-            }
         }
 
         public void EntitySelected(GeometryModel3D model)
