@@ -48,6 +48,7 @@ namespace PZ3.Classes
                 l.Name = node.SelectSingleNode("Name").InnerText;
                 l.FirstEnd = long.Parse(node.SelectSingleNode("FirstEnd").InnerText);
                 l.SecondEnd = long.Parse(node.SelectSingleNode("SecondEnd").InnerText);
+                l.Resistance = double.Parse(node.SelectSingleNode("R").InnerText);
 
                 foreach (XmlNode pointNode in node.ChildNodes[9].ChildNodes) // 9 posto je Vertices 9. node u jednom line objektu
                 {

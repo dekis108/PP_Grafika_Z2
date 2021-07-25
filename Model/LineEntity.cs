@@ -20,6 +20,8 @@ namespace PZ2.Model
 
         public bool Assigned { get; set; }
 
+        public double Resistance { get; set; }
+
         public override string ToString()
         {
             return string.Format($"{Name} Id:{Id}\nStart:{firstEnd}\nEnd:{secondEnd}");

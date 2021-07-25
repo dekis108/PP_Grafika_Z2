@@ -23,12 +23,51 @@ namespace PZ3.Classes
 
         public void ApplyFilter(DrawableElements all, DrawableElements filtered)
         {
-            throw new NotImplementedException();
+            switch (currentFilter)
+            {
+                default:
+                case noFilter:
+                    foreach (var entity in all.lines) filtered.lines.Add(entity.Key, entity.Value);
+                    break;
+                case option1:
+                    foreach (var entity in all.lines)
+                    {
+                        if (entity.Value.Resistance <= 1) filtered.lines.Add(entity.Key, entity.Value);
+                    }
+                    break;
+                case option2:
+                    foreach (var entity in all.lines)
+                    {
+                        if (entity.Value.Resistance >= 1 && entity.Value.Resistance <= 2) filtered.lines.Add(entity.Key, entity.Value);
+                    }
+                    break;
+                case option3:
+                    foreach (var entity in all.lines)
+                    {
+                        if (entity.Value.Resistance > 2) filtered.lines.Add(entity.Key, entity.Value);
+                    }
+                    break;
+            }
         }
 
         public void SetFilter(string filter)
         {
-            throw new NotImplementedException();
+            switch (filter)
+            {
+                default:
+                case noFilter:
+                    currentFilter = noFilter;
+                    break;
+                case option1:
+                    currentFilter = option1;
+                    break;
+                case option2:
+                    currentFilter = option2;
+                    break;
+                case option3:
+                    currentFilter = option3;
+                    break;
+            }
         }
     }
 }

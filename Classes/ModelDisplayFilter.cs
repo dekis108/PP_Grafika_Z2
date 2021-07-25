@@ -34,6 +34,8 @@ namespace PZ3.Classes
             DrawableElements filtered = new DrawableElements();
 
             connectionFilter.ApplyFilter(unmodified, filtered);
+            resistanceFilter.ApplyFilter(unmodified, filtered);
+            opennessFilter.ApplyFilter(unmodified, filtered);
 
             return filtered;
         }
@@ -42,6 +44,11 @@ namespace PZ3.Classes
         internal void SetConnectionFilter(string filter)
         {
             connectionFilter.SetFilter(filter);
+        }
+
+        internal void SetResistanceFilter(string filter)
+        {
+            resistanceFilter.SetFilter(filter);
         }
     }
 }

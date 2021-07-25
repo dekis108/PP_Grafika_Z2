@@ -318,7 +318,8 @@ namespace PZ3
 
         private void comboResistance_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           // _drawer.ApplyResistanceFilterToLines((string)comboResistance.SelectedItem);
+            _drawer.displayFilter.SetResistanceFilter((string)comboResistance.SelectedItem);
+            _drawer.Draw();
         }
 
 
