@@ -68,5 +68,7 @@
         <Label Content="Connection filter:" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Width="120"/>
         <Label Content="Resistence filter:" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="120"/>
         <ComboBox x:Name="comboResistance" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Switch status filter:" HorizontalAlignment="Left" Margin="10,122,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="comboOpen" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </Window>

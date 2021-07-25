@@ -23,33 +23,35 @@ namespace PZ3.Classes
             currentFilter = noFilter;
         }
 
-        public void ApplyFilter(DrawableElements all, DrawableElements filtered)
+        public void ApplyFilter(DrawableElements filtered)
         {
+            List<long> toFilterOut = new List<long>();
             switch (currentFilter)
             {
                 default:
                 case noFilter:
-                    foreach (var entity in all.powerEntities) filtered.powerEntities.Add(entity.Key, entity.Value);
+                    return; //skip
                     break;
                 case option1:
-                    foreach (var entity in all.powerEntities)
+                    foreach (var entity in filtered.powerEntities)
                     {
-                        if (entity.Value.ConnectionCount <= 3) filtered.powerEntities.Add(entity.Key, entity.Value);
+                        if (entity.Value.ConnectionCount > 3) toFilterOut.Add(entity.Key);
                     }
                     break;
                 case option2:
-                    foreach (var entity in all.powerEntities)
+                    foreach (var entity in filtered.powerEntities)
                     {
-                        if (entity.Value.ConnectionCount >= 3 && entity.Value.ConnectionCount <= 5) filtered.powerEntities.Add(entity.Key, entity.Value);
+                        if (!(entity.Value.ConnectionCount >= 3 && entity.Value.ConnectionCount <= 5)) toFilterOut.Add(entity.Key);
                     }
                     break;
                 case option3:
-                    foreach (var entity in all.powerEntities)
+                    foreach (var entity in filtered.powerEntities)
                     {
-                        if (entity.Value.ConnectionCount > 5) filtered.powerEntities.Add(entity.Key, entity.Value);
+                        if (!(entity.Value.ConnectionCount > 5)) toFilterOut.Add(entity.Key);
                     }
                     break;
             }
+            foreach (long key in toFilterOut) filtered.powerEntities.Remove(key);
         }
 
         public void SetFilter(string filter)

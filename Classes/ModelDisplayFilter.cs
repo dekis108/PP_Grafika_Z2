@@ -28,14 +28,16 @@ namespace PZ3.Classes
 
         public DrawableElements FilterOut()
         {
-            Dictionary<long, PowerEntity> filteredPowerEntities = new Dictionary<long, PowerEntity>();
-            Dictionary<long, LineEntity> filteredLines = new Dictionary<long, LineEntity>();
 
             DrawableElements filtered = new DrawableElements();
 
-            connectionFilter.ApplyFilter(unmodified, filtered);
-            resistanceFilter.ApplyFilter(unmodified, filtered);
-            opennessFilter.ApplyFilter(unmodified, filtered);
+            foreach (var obj in unmodified.powerEntities) filtered.powerEntities.Add(obj.Key, obj.Value);
+
+            foreach (var obj in unmodified.lines) filtered.lines.Add(obj.Key, obj.Value);
+
+            connectionFilter.ApplyFilter(filtered);
+            resistanceFilter.ApplyFilter(filtered);
+            //opennessFilter.ApplyFilter(filtered);
 
             return filtered;
         }
@@ -49,6 +51,11 @@ namespace PZ3.Classes
         internal void SetResistanceFilter(string filter)
         {
             resistanceFilter.SetFilter(filter);
+        }
+
+        internal void SetOpennessFilter(string filter)
+        {
+            opennessFilter.SetFilter(filter);
         }
     }
 }

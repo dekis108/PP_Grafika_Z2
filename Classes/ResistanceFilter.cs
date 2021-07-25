@@ -21,33 +21,35 @@ namespace PZ3.Classes
             currentFilter = noFilter;
         }
 
-        public void ApplyFilter(DrawableElements all, DrawableElements filtered)
+        public void ApplyFilter(DrawableElements filtered)
         {
+            List<long> toFilterOut = new List<long>();
             switch (currentFilter)
             {
                 default:
                 case noFilter:
-                    foreach (var entity in all.lines) filtered.lines.Add(entity.Key, entity.Value);
+                    return; //skip
                     break;
                 case option1:
-                    foreach (var entity in all.lines)
+                    foreach (var line in filtered.lines)
                     {
-                        if (entity.Value.Resistance <= 1) filtered.lines.Add(entity.Key, entity.Value);
+                        if (line.Value.Resistance > 1) toFilterOut.Add(line.Key);
                     }
                     break;
                 case option2:
-                    foreach (var entity in all.lines)
+                    foreach (var line in filtered.lines)
                     {
-                        if (entity.Value.Resistance >= 1 && entity.Value.Resistance <= 2) filtered.lines.Add(entity.Key, entity.Value);
+                        if (!(line.Value.Resistance >= 1 && line.Value.Resistance <= 2)) toFilterOut.Add(line.Key);
                     }
                     break;
                 case option3:
-                    foreach (var entity in all.lines)
+                    foreach (var line in filtered.lines)
                     {
-                        if (entity.Value.Resistance > 2) filtered.lines.Add(entity.Key, entity.Value);
+                        if (line.Value.Resistance <= 2) toFilterOut.Add(line.Key);
                     }
                     break;
             }
+            foreach (long key in toFilterOut) filtered.lines.Remove(key);
         }
 
         public void SetFilter(string filter)

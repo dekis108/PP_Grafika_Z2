@@ -48,6 +48,8 @@ namespace PZ3
         private string resOption2;
         private string resOption3;
 
+        private string openOption1;
+
         private GeometryModel3D hitgeo;
         private Dictionary<long, GeometryModel3D> entitiesModels = new Dictionary<long, GeometryModel3D>();
         private List<GeometryModel3D> selectedEntities = new List<GeometryModel3D>();
@@ -82,6 +84,15 @@ namespace PZ3
             comboResistance.SelectedItem = comboResistance.Items[0];
             comboResistance.SelectionChanged += comboResistance_SelectionChanged;
 
+            List<string> opennessFilters = new List<string>() {
+                noFilter,
+                openOption1
+            };
+            comboOpen.ItemsSource = opennessFilters;
+            comboOpen.SelectedItem = comboOpen.Items[0];
+            comboOpen.SelectionChanged += comboOpenness_SelectionChanged;
+
+
 
 
             _drawer.Draw();
@@ -98,6 +109,8 @@ namespace PZ3
              */
         }
 
+
+
         private void InitDrawer(PowerGrid powerGrid)
         {
             _drawer = new Drawer(Map, powerGrid.PowerEntities, powerGrid.LineEntities);
@@ -111,6 +124,8 @@ namespace PZ3
             resOption1 = ResistanceFilter.option1;
             resOption2 = ResistanceFilter.option2;
             resOption3 = ResistanceFilter.option3;
+
+            openOption1 = OpennessFilter.option1;
         }
 
         private void viewport1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -319,6 +334,11 @@ namespace PZ3
         private void comboResistance_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _drawer.displayFilter.SetResistanceFilter((string)comboResistance.SelectedItem);
+            _drawer.Draw();
+        }
+        private void comboOpenness_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _drawer.displayFilter.SetOpennessFilter((string)comboOpen.SelectedItem);
             _drawer.Draw();
         }
 
