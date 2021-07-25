@@ -21,31 +21,39 @@ namespace PZ3.Classes
 
         public void ApplyFilter(DrawableElements filtered)
         {
-            //TODO
             List<long> toFilterOut = new List<long>();
             switch (currentFilter)
             {
                 default:
                 case noFilter:
-                    foreach (var line in filtered.lines) filtered.lines.Add(line.Key, line.Value);
+                    return; //skip
                     break;
                 case option1:
                     foreach (var line in filtered.lines)
                     {
-                        if (ConnectingEntitiesAreOpen(line))
+                        if (!ConnectingEntitiesAreOpen(line.Value, filtered.powerEntities))
                         {
-                            filtered.lines.Add(line.Key, line.Value);
+                            toFilterOut.Add(line.Key);
                         }
                     }
                     break;
             }
-            foreach (long key in toFilterOut) filtered.powerEntities.Remove(key);
+            foreach (long key in toFilterOut) filtered.lines.Remove(key);
         }
 
-        private bool ConnectingEntitiesAreOpen(KeyValuePair<long, LineEntity> line)
+        private bool ConnectingEntitiesAreOpen(LineEntity line, Dictionary<long, PowerEntity> entities)
         {
-            //TODO: if levi ili desni je switch i to closed -> izbaci
-            throw new NotImplementedException();
+            if (entities.ContainsKey(line.FirstEnd) && entities[line.FirstEnd] is SwitchEntity && ((SwitchEntity)entities[line.FirstEnd]).Status == "Open")
+            {
+                return false;
+            }
+
+            if (entities.ContainsKey(line.SecondEnd) && entities[line.SecondEnd] is SwitchEntity && ((SwitchEntity)entities[line.SecondEnd]).Status == "Open")
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void SetFilter(string filter)
