@@ -23,7 +23,7 @@ namespace PZ3.Classes
         private static double _longitudeMax = 19.894459;
 
         private static double _objectSize = 0.006;
-        private static double _lineSize = 0.002;
+        private static double _lineSize = 0.0025;
 
         private static Model3DGroup _map;
         private static Model3DCollection _mapBackground = new Model3DCollection();
@@ -125,7 +125,7 @@ namespace PZ3.Classes
                     if (vertice.Y < _longitudeMin || vertice.Y > _longitudeMax || vertice.X < _latitudeMin || vertice.X > _latitudeMax)
                         continue;
 
-                    ScaleToMap(vertice.X, vertice.Y, out x, out y);
+                    ScaleToMap(Math.Round(vertice.X,3), Math.Round(vertice.Y, 3), out x, out y);
                     points.Add(new Point(y, x)); //nzm ne pitaj
                    
                 }
@@ -150,21 +150,38 @@ namespace PZ3.Classes
 
             var points = new Point3DCollection()
             {
-                new Point3D(start.X - _lineSize/2 - 0.5, start.Y + _lineSize/2 - 0.5, _lineSize),
-                new Point3D(start.X - _lineSize/2 - 0.5, start.Y - _lineSize/2 - 0.5, _lineSize),
-                new Point3D(end.X + _lineSize/2 - 0.5, end.Y - _lineSize/2 - 0.5, _lineSize),
-                new Point3D(end.X + _lineSize/2 - 0.5, end.Y + _lineSize/2 - 0.5, _lineSize),
 
+                new Point3D(start.X - _lineSize/2 - 0.5, start.Y + _lineSize/2 - 0.5, 0),
+                new Point3D(start.X - _lineSize/2 - 0.5, start.Y - _lineSize/2 - 0.5, 0),
+                new Point3D(start.X + _lineSize/2 - 0.5, start.Y + _lineSize/2 - 0.5, 0),
+                new Point3D(start.X + _lineSize/2 - 0.5, start.Y - _lineSize/2 - 0.5, 0),
                 new Point3D(start.X - _lineSize/2 - 0.5, start.Y + _lineSize/2 - 0.5, _lineSize),
                 new Point3D(start.X - _lineSize/2 - 0.5, start.Y - _lineSize/2 - 0.5, _lineSize),
-                new Point3D(end.X + _lineSize/2 - 0.5, end.Y - _lineSize/2 - 0.5, _lineSize),
+                new Point3D(start.X + _lineSize/2 - 0.5, start.Y + _lineSize/2 - 0.5, _lineSize),
+                new Point3D(start.X + _lineSize/2 - 0.5, start.Y - _lineSize/2 - 0.5, _lineSize),
+
+
+                new Point3D(end.X - _lineSize/2 - 0.5, end.Y + _lineSize/2 - 0.5, 0),
+                new Point3D(end.X - _lineSize/2 - 0.5, end.Y - _lineSize/2 - 0.5, 0),
+                new Point3D(end.X + _lineSize/2 - 0.5, end.Y + _lineSize/2 - 0.5, 0),
+                new Point3D(end.X + _lineSize/2 - 0.5, end.Y - _lineSize/2 - 0.5, 0),
+                new Point3D(end.X - _lineSize/2 - 0.5, end.Y + _lineSize/2 - 0.5, _lineSize),
+                new Point3D(end.X - _lineSize/2 - 0.5, end.Y - _lineSize/2 - 0.5, _lineSize),
                 new Point3D(end.X + _lineSize/2 - 0.5, end.Y + _lineSize/2 - 0.5, _lineSize),
+                new Point3D(end.X + _lineSize/2 - 0.5, end.Y - _lineSize/2 - 0.5, _lineSize),
+
+
             };
 
 
             var indicies = new Int32Collection()
             {
-                2,1,0,  3,2,0,  5,7,4,   5,6,7,  3,0,7, 3,7,6,  0,1,4,  0,4,7,  2,3,5,  3,6,5,  1,2,4,  2,5,4
+                1,0,2,  3,1,2,  1,5,4,  0,1,4,  2,0,4,  2,4,6,  3,7,5,  1,3,5,  3,2,6,  3,6,7,  5,7,6,  5,6,4, //start
+                9,8,10,  11,9,10,  9,13,12,  8,9,12,  10,8,12,  10,12,14,  11,15,13,  9,11,13,  11,10,14,  11,14,15,  13,15,14,  13,14,12, //end
+                1,9,13, 1,13,5, 3,11,15,    3,15,7, 0,8,12, 0,12,4, 2,10,14,    2,14,6,
+                8,0,12, 0,4,12, 10,2,14, 2,6,14,
+                5,13,12, 5,12,4, 7,15,13,    7,13,5,    7,15,12,    7,12,4, 6,14,13,    6,13,5, 5,13,14,    5,14,6, 12,7,15, 12,4,7,   7,15,12,    7,12,4,  7,4,12, 7,12,15  //up
+
             };
 
             powerLine.Geometry = new MeshGeometry3D() { Positions = points, TriangleIndices = indicies };

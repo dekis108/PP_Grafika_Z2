@@ -37,7 +37,7 @@ namespace PZ3.Classes
 
             connectionFilter.ApplyFilter(filtered);
             resistanceFilter.ApplyFilter(filtered);
-            opennessFilter.ApplyFilter(filtered);
+            opennessFilter.ApplyFilter(filtered, unmodified);
 
             return filtered;
         }

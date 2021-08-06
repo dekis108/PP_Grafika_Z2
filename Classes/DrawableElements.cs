@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace PZ3.Classes
 {
     public class DrawableElements
-    {
+    { 
+
         public Dictionary<long, PowerEntity> powerEntities;
         public Dictionary<long, LineEntity> lines;
 

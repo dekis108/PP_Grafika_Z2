@@ -19,7 +19,7 @@ namespace PZ3.Classes
             currentFilter = noFilter;
         }
 
-        public void ApplyFilter(DrawableElements filtered)
+        public void ApplyFilter(DrawableElements filtered, DrawableElements unmodified)
         {
             List<long> toFilterOut = new List<long>();
             switch (currentFilter)
@@ -31,7 +31,7 @@ namespace PZ3.Classes
                 case option1:
                     foreach (var line in filtered.lines)
                     {
-                        if (!ConnectingEntitiesAreOpen(line.Value, filtered.powerEntities))
+                        if (!ConnectingEntitiesAreOpen(line.Value, unmodified.powerEntities))
                         {
                             toFilterOut.Add(line.Key);
                         }
@@ -68,6 +68,11 @@ namespace PZ3.Classes
                     currentFilter = option1;
                     break;
             }
+        }
+
+        public void ApplyFilter(DrawableElements filtered)
+        {
+            throw new NotImplementedException();
         }
     }
 }
