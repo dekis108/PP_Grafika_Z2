@@ -23,7 +23,7 @@ namespace PZ3.Classes
             currentFilter = noFilter;
         }
 
-        public void ApplyFilter(DrawableElements filtered)
+        public void ApplyFilter(DrawableElements filtered, DrawableElements unmodified)
         {
             List<long> toFilterOut = new List<long>();
             switch (currentFilter)

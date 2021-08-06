@@ -10,7 +10,7 @@ namespace PZ3.Interfaces
 {
     interface IModelFilter
     {
-        void ApplyFilter(DrawableElements filtered);
+        void ApplyFilter(DrawableElements filtered, DrawableElements unmodified);
 
         void SetFilter(string filter);
     }

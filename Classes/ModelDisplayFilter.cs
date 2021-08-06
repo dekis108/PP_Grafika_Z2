@@ -35,8 +35,8 @@ namespace PZ3.Classes
 
             foreach (var obj in unmodified.lines) filtered.lines.Add(obj.Key, obj.Value);
 
-            connectionFilter.ApplyFilter(filtered);
-            resistanceFilter.ApplyFilter(filtered);
+            connectionFilter.ApplyFilter(filtered, unmodified);
+            resistanceFilter.ApplyFilter(filtered, unmodified);
             opennessFilter.ApplyFilter(filtered, unmodified);
 
             return filtered;
