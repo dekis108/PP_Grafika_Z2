@@ -37,7 +37,7 @@ namespace PZ3.Classes
 
         //private Dictionary<long, GeometryModel3D> powerEntities = new Dictionary<long, GeometryModel3D>();
         private Dictionary<Point, int> locationsTaken = new Dictionary<Point, int>();
-        private List<GeometryModel3D> powerLines = new List<GeometryModel3D>();
+        public List<GeometryModel3D> powerLines = new List<GeometryModel3D>();
 
         public static readonly DependencyProperty TagDP = DependencyProperty.RegisterAttached("Tag", typeof(string), typeof(GeometryModel3D));
         public static readonly DependencyProperty StartDP = DependencyProperty.RegisterAttached("Start", typeof(long), typeof(GeometryModel3D));
@@ -45,9 +45,11 @@ namespace PZ3.Classes
         public static readonly DependencyProperty EntityTypeDP = DependencyProperty.RegisterAttached("EntityType", typeof(string), typeof(GeometryModel3D));
         public static readonly DependencyProperty SwitchMode = DependencyProperty.RegisterAttached("SwitchMode", typeof(bool), typeof(GeometryModel3D));
 
-        private Dictionary<long, PowerEntity> gridPowerEntities = new Dictionary<long, PowerEntity>();
+        //private Dictionary<long, PowerEntity> gridPowerEntities = new Dictionary<long, PowerEntity>();
 
         public ModelDisplayFilter displayFilter { get; private set; }
+
+        public Dictionary<long, GeometryModel3D> powerEntities = new Dictionary<long, GeometryModel3D>();
 
         public Drawer(Model3DGroup map, Dictionary<long, PowerEntity> powerEntities, Dictionary<long, LineEntity> lineEntities)
         {
@@ -58,9 +60,9 @@ namespace PZ3.Classes
         }
 
         
-        public void DrawPowerEntities(Dictionary<long, PowerEntity> entities) 
+        public void DrawPowerEntities(Dictionary<long, PowerEntity> entities, Dictionary<long, GeometryModel3D> drawnEntities) 
         {
-            gridPowerEntities = entities;
+            //gridPowerEntities = entities;
             foreach (var entity in entities.Values)
             {
                 if (entity.TranslatedY < _longitudeMin || entity.TranslatedY > _longitudeMax || entity.TranslatedX < _latitudeMin || entity.TranslatedX > _latitudeMax)
@@ -90,12 +92,15 @@ namespace PZ3.Classes
                     locationsTaken.Add(point, 1);
                 }
 
-                Draw(entity, point);
+                DrawPowerEntity(entity, point, drawnEntities);
             }
         }
 
         internal void Draw()
         {
+            powerEntities.Clear();
+            powerLines.Clear();
+
             DrawableElements toDraw =  displayFilter.FilterOut();
 
             locationsTaken = new Dictionary<Point, int>();
@@ -103,8 +108,8 @@ namespace PZ3.Classes
             _map.Children.Clear();
             foreach (var model in _mapBackground) _map.Children.Add(model);
 
-            DrawPowerEntities(toDraw.powerEntities);
-            DrawLines(toDraw.lines);
+            DrawPowerEntities(toDraw.powerEntities, powerEntities);
+            DrawLines(toDraw.lines, powerEntities);
         }
 
         private void ScaleToMap(double x, double y, out double outX, out double outY)
@@ -113,7 +118,7 @@ namespace PZ3.Classes
             outY = (y - _longitudeMin) / (_longitudeMax - _longitudeMin) * (1 - _objectSize);
         }
 
-        public List<GeometryModel3D> DrawLines(Dictionary<long, LineEntity> lines)
+        public List<GeometryModel3D> DrawLines(Dictionary<long, LineEntity> lines, Dictionary<long, GeometryModel3D> entities)
         {
             double x, y;
             foreach(LineEntity line in lines.Values)
@@ -133,14 +138,14 @@ namespace PZ3.Classes
 
                 for (int i = 1; i < points.Count; ++i) //draw a line between points[i] and points[i-1]
                 {
-                    DrawLine(line, points[i], points[i - 1]);
+                    DrawLine(line, points[i], points[i - 1], entities);
                 }
             }
 
             return powerLines;
         }
 
-        private void DrawLine(LineEntity line, Point start, Point end)
+        private void DrawLine(LineEntity line, Point start, Point end, Dictionary<long, GeometryModel3D> entities)
         {
             GeometryModel3D powerLine = new GeometryModel3D();
             powerLine.Material = _defaultLineMaterial;
@@ -185,12 +190,11 @@ namespace PZ3.Classes
             };
 
             powerLine.Geometry = new MeshGeometry3D() { Positions = points, TriangleIndices = indicies };
-
             _map.Children.Add(powerLine);
             powerLines.Add(powerLine);
         }
 
-        private void Draw(PowerEntity entity, Point point)
+        private void DrawPowerEntity(PowerEntity entity, Point point, Dictionary<long, GeometryModel3D> drawnEntities)
         {
             string tag = $"ID: {entity.Id} \nName: {entity.Name}\n";
 
@@ -260,7 +264,7 @@ namespace PZ3.Classes
 
 
             obj.Geometry = new MeshGeometry3D() { Positions = points, TriangleIndices = indicies};
-
+            drawnEntities.Add( entity.Id, obj);
             _map.Children.Add(obj);
         }
 

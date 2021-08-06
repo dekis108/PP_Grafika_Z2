@@ -51,7 +51,7 @@ namespace PZ3
         private string openOption1;
 
         private GeometryModel3D hitgeo;
-        private Dictionary<long, GeometryModel3D> entitiesModels = new Dictionary<long, GeometryModel3D>();
+        //private Dictionary<long, GeometryModel3D> entitiesModels = new Dictionary<long, GeometryModel3D>();
         private List<GeometryModel3D> selectedEntities = new List<GeometryModel3D>();
         private List<GeometryModel3D> linesModels = new List<GeometryModel3D>();
 
@@ -258,7 +258,7 @@ namespace PZ3
             {
                 bool gasit = false;
                 //for (int i = 0; i < models.Count; i++)
-                foreach(var model in entitiesModels.Values)
+                foreach(var model in _drawer.powerEntities.Values)
                 {
                     if (gasit) break;
 
@@ -277,7 +277,7 @@ namespace PZ3
 
                 if (!gasit)
                 {
-                    foreach(var model in linesModels)
+                    foreach(var model in _drawer.powerLines)
                     {
                         if (gasit) break;
 
@@ -319,8 +319,8 @@ namespace PZ3
         {
             try
             {
-                _drawer.EntitySelected(entitiesModels[id]);
-                selectedEntities.Add(entitiesModels[id]);
+                _drawer.EntitySelected(_drawer.powerEntities[id]);
+                selectedEntities.Add(_drawer.powerEntities[id]);
             }
             catch { }
         }
