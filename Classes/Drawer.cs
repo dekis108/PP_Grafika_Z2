@@ -153,6 +153,10 @@ namespace PZ3.Classes
             powerLine.SetValue(StartDP, line.FirstEnd);
             powerLine.SetValue(EndDP, line.SecondEnd);
 
+            string tag = $"Power line {line.Name}\nId: {line.Id}\nConnecting {line.FirstEnd} : {line.SecondEnd}";
+            powerLine.SetValue(TagDP, tag);
+
+
             var points = new Point3DCollection()
             {
 

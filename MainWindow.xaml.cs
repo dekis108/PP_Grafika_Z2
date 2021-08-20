@@ -293,6 +293,9 @@ namespace PZ3
                             EntitySelected(start);
                             EntitySelected(end);
 
+
+                            string tag = (string)model.GetValue(Drawer.TagDP);
+                            MessageBox.Show(tag, "Entity information", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
                 }
