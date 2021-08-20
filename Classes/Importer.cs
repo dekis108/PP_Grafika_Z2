@@ -50,6 +50,15 @@ namespace PZ3.Classes
                 l.SecondEnd = long.Parse(node.SelectSingleNode("SecondEnd").InnerText);
                 l.Resistance = double.Parse(node.SelectSingleNode("R").InnerText);
 
+                try
+                {
+                    l.ConductorMaterial = (ConductorMaterial)Enum.Parse(typeof(ConductorMaterial), node.SelectSingleNode("ConductorMaterial").InnerText);
+                }
+                catch
+                {
+                    l.ConductorMaterial = ConductorMaterial.Other;
+                }
+
                 foreach (XmlNode pointNode in node.ChildNodes[9].ChildNodes) // 9 posto je Vertices 9. node u jednom line objektu
                 {
                     Point p = new Point();

@@ -9,6 +9,9 @@ using System.Windows.Shapes;
 
 namespace PZ2.Model
 {
+
+    public enum ConductorMaterial { Other = 0, Steel, Acsr, Copper }
+
     public class LineEntity
     {
         private long id;
@@ -19,6 +22,8 @@ namespace PZ2.Model
         public List<Point> Vertices { get; set; }
 
         public bool Assigned { get; set; }
+
+        public ConductorMaterial ConductorMaterial { get; set; }
 
         public double Resistance { get; set; }
 

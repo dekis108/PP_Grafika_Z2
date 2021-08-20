@@ -29,6 +29,12 @@ namespace PZ3.Classes
         private static Model3DCollection _mapBackground = new Model3DCollection();
 
         private DiffuseMaterial _defaultLineMaterial = new DiffuseMaterial(Brushes.Black);
+
+        private DiffuseMaterial _steelLineMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(0, 0, 0)));
+        private DiffuseMaterial _acrsLineMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(102,102,0)));
+        private DiffuseMaterial _copperlLineMaterial = new DiffuseMaterial(new SolidColorBrush(Color.FromRgb(153, 76, 0)));
+
+
         private DiffuseMaterial _defaultNodeMaterial = new DiffuseMaterial(Brushes.Blue);
         private DiffuseMaterial _defaultSwitchClosedMaterial = new DiffuseMaterial(Brushes.Red);
         private DiffuseMaterial _defaultSwitchOpenMaterial = new DiffuseMaterial(Brushes.Green);
@@ -148,12 +154,32 @@ namespace PZ3.Classes
         private void DrawLine(LineEntity line, Point start, Point end, Dictionary<long, GeometryModel3D> entities)
         {
             GeometryModel3D powerLine = new GeometryModel3D();
-            powerLine.Material = _defaultLineMaterial;
+
+            switch(line.ConductorMaterial)
+            {
+                case ConductorMaterial.Copper:
+                    powerLine.Material = _copperlLineMaterial;
+                    break;
+
+                case ConductorMaterial.Acsr:
+                    powerLine.Material = _acrsLineMaterial;
+                    break;
+
+                case ConductorMaterial.Steel:
+                    powerLine.Material = _steelLineMaterial;
+                    break;
+
+                default:
+                    powerLine.Material = _defaultLineMaterial;
+                    break;
+
+            }
+
 
             powerLine.SetValue(StartDP, line.FirstEnd);
             powerLine.SetValue(EndDP, line.SecondEnd);
 
-            string tag = $"Power line {line.Name}\nId: {line.Id}\nConnecting {line.FirstEnd} : {line.SecondEnd}";
+            string tag = $"Power line {line.Name}\nId: {line.Id}\n Material: {line.ConductorMaterial}\nConnecting {line.FirstEnd} : {line.SecondEnd}";
             powerLine.SetValue(TagDP, tag);
 
 
